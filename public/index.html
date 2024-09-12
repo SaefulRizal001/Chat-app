@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        ul { list-style-type: none; padding: 0; }
+        li { padding: 8px; margin-bottom: 10px; background-color: #f1f1f1; border-radius: 4px; }
+        #messages { margin-bottom: 20px; }
+        input { padding: 10px; width: 90%; }
+        button { padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Chat Application</h1>
+    <ul id="messages"></ul>
+    <input id="messageInput" autocomplete="off" placeholder="Type a message...">
+    <button id="sendButton">Send</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        const form = document.querySelector('form');
+        const input = document.getElementById('messageInput');
+        const messages = document.getElementById('messages');
+        const button = document.getElementById('sendButton');
+
+        // Mengirim pesan ketika tombol diklik
+        button.onclick = function() {
+            if (input.value) {
+                socket.emit('chat message', input.value);
+                input.value = '';
+            }
+        };
+
+        // Mendengarkan pesan dari server
+        socket.on('chat message', function(msg) {
+            const li = document.createElement('li');
+            li.textContent = msg;
+            messages.appendChild(li);
+        });
+    </script>
+</body>
+</html>
